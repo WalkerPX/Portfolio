@@ -154,14 +154,14 @@ const Index = () => {
           <div className="text-center space-y-6">
             <div>
               <h1 className="text-4xl md:text-5xl font-nunito">
-                hi!{" "}
+                Hi!{" "}
                 <span className="font-extrabold italic text-primary">
-                  i'm shar
+                  I'm Walker
                 </span>
               </h1>
             </div>
             <p className="text-lg md:text-xl text-muted-foreground font-semibold">
-              illustrator, animator, and developer
+              student &amp; creative director
             </p>
 
             {/* Navigation Icons */}
@@ -196,14 +196,14 @@ const Index = () => {
       {/* Footer */}
       <footer className="relative z-10 pb-6 pt-4 flex flex-col items-center gap-3">
         <div className="flex items-center gap-4">
-          <a href="#" className="text-foreground/60 hover:text-primary transition-colors" aria-label="Twitter">
+          <a href="#" className="text-foreground/60 hover:text-primary transition-colors" aria-label="LinkedIn">
             <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M22.46 6c-.85.38-1.78.64-2.73.76 1-.6 1.76-1.54 2.12-2.67-.93.55-1.96.95-3.06 1.17a4.77 4.77 0 0 0-8.13 4.35C7.69 9.4 4.07 7.59 1.64 4.85a4.77 4.77 0 0 0 1.47 6.37A4.72 4.72 0 0 1 .96 10.7v.06a4.77 4.77 0 0 0 3.82 4.68 4.7 4.7 0 0 1-2.15.08 4.77 4.77 0 0 0 4.46 3.31A9.56 9.56 0 0 1 0 21.54a13.48 13.48 0 0 0 7.29 2.14c8.75 0 13.53-7.25 13.53-13.54 0-.21 0-.42-.01-.63A9.68 9.68 0 0 0 24 6.59a9.5 9.5 0 0 1-2.73.75l-1.27-1.34z" />
+              <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
             </svg>
           </a>
-          <a href="#" className="text-foreground/60 hover:text-primary transition-colors" aria-label="YouTube">
+          <a href="mailto:" className="text-foreground/60 hover:text-primary transition-colors" aria-label="Gmail">
             <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.66 31.66 0 0 0 0 12a31.66 31.66 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14c1.88.55 9.38.55 9.38.55s7.5 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.66 31.66 0 0 0 24 12a31.66 31.66 0 0 0-.5-5.81zM9.55 15.57V8.43L15.82 12l-6.27 3.57z" />
+              <path d="M24 5.46v13.08c0 .85-.69 1.54-1.54 1.54H21V7.85l-9 5.77-9-5.77v12.23H1.54C.69 20.08 0 19.39 0 18.54V5.46C0 4.17 1.04 3.08 2.32 3.08h.38L12 9.85l9.3-6.77h.38C22.96 3.08 24 4.17 24 5.46z" />
             </svg>
           </a>
           <a href="#" className="text-foreground/60 hover:text-primary transition-colors" aria-label="Instagram">
@@ -212,7 +212,7 @@ const Index = () => {
             </svg>
           </a>
         </div>
-        <p className="text-sm text-muted-foreground">© 2025 Sharlene Yap</p>
+        <p className="text-sm text-muted-foreground">© 2025 Walker</p>
       </footer>
 
       {/* Frog character */}
