@@ -1,12 +1,14 @@
 import { useState, useCallback, useEffect } from "react";
-import { Info, Link, Briefcase, HelpCircle, Mail } from "lucide-react";
+import { Info, Link, Briefcase, Camera, Mail } from "lucide-react";
 import DesktopWindow from "@/components/DesktopWindow";
 import DraggableWindow from "@/components/DraggableWindow";
 import NavIcon from "@/components/NavIcon";
 import Toolbar from "@/components/Toolbar";
+import CreativeWorksContent, { PHOTO_WORKS, PhotoWork } from "@/components/CreativeWorksContent";
+import PhotoWindowContent from "@/components/PhotoWindowContent";
 import starCharacter from "@/assets/star-character.png";
 
-type WindowId = "about" | "links" | "work" | "faq" | "contact" | "star";
+type WindowId = "about" | "links" | "work" | "creative" | "contact" | "star" | `photo-${string}`;
 
 interface WindowState {
   id: WindowId;
@@ -18,18 +20,18 @@ const WINDOW_CONFIGS: WindowState[] = [
   { id: "about", title: "about", defaultPos: { x: 120, y: 80 } },
   { id: "links", title: "links", defaultPos: { x: 200, y: 120 } },
   { id: "work", title: "work", defaultPos: { x: 280, y: 90 } },
-  { id: "faq", title: "faq", defaultPos: { x: 160, y: 160 } },
+  { id: "creative", title: "creative works", defaultPos: { x: 160, y: 100 } },
   { id: "contact", title: "contact", defaultPos: { x: 240, y: 140 } },
   { id: "star", title: "⭐ secret", defaultPos: { x: 180, y: 100 } },
 ];
 
-const WINDOW_CONTENT: Record<WindowId, React.ReactNode> = {
+const STATIC_WINDOW_CONTENT: Record<string, React.ReactNode> = {
   about: (
     <div className="space-y-3 text-card-foreground">
       <h2 className="text-xl font-bold text-primary">about me</h2>
       <p>
-        hey there! i'm shar — an illustrator, animator, and developer. i love
-        creating cute characters and building fun interactive experiences.
+        hey there! i'm walker — a history/law student and creative director.
+        i love building fun interactive experiences and creative projects.
       </p>
       <p>
         this is where you can learn more about me and what i do. feel free to
@@ -42,13 +44,13 @@ const WINDOW_CONTENT: Record<WindowId, React.ReactNode> = {
       <h2 className="text-xl font-bold text-primary">links</h2>
       <ul className="space-y-2">
         <li>
-          <a href="#" className="text-primary hover:underline">🐦 twitter</a>
+          <a href="https://www.instagram.com/walkerbirchfield" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">📸 instagram</a>
         </li>
         <li>
-          <a href="#" className="text-primary hover:underline">📺 youtube</a>
+          <a href="https://www.linkedin.com/in/walker-birchfield-664659360" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">💼 linkedin</a>
         </li>
         <li>
-          <a href="#" className="text-primary hover:underline">📸 instagram</a>
+          <a href="mailto:walker.birchfield03@gmail.com" className="text-primary hover:underline">📧 gmail</a>
         </li>
         <li>
           <a href="#" className="text-primary hover:underline">🛒 shop</a>
@@ -76,31 +78,12 @@ const WINDOW_CONTENT: Record<WindowId, React.ReactNode> = {
       </div>
     </div>
   ),
-  faq: (
-    <div className="space-y-3 text-card-foreground">
-      <h2 className="text-xl font-bold text-primary">faq</h2>
-      <div className="space-y-4">
-        <div>
-          <p className="font-bold">q: are your commissions open?</p>
-          <p className="text-muted-foreground">a: check my social media for the latest updates!</p>
-        </div>
-        <div>
-          <p className="font-bold">q: what tools do you use?</p>
-          <p className="text-muted-foreground">a: clip studio paint, after effects, and vs code!</p>
-        </div>
-        <div>
-          <p className="font-bold">q: can i use your art?</p>
-          <p className="text-muted-foreground">a: please don't repost or use my art without permission.</p>
-        </div>
-      </div>
-    </div>
-  ),
   contact: (
     <div className="space-y-3 text-card-foreground">
       <h2 className="text-xl font-bold text-primary">contact</h2>
       <p>want to get in touch? here's how you can reach me:</p>
       <div className="space-y-2">
-        <p>📧 <span className="text-primary">hello@sharyap.com</span></p>
+        <p>📧 <span className="text-primary">walker.birchfield03@gmail.com</span></p>
         <p>💼 for business inquiries, please email me directly.</p>
       </div>
     </div>
@@ -125,6 +108,7 @@ const Index = () => {
   const [openWindows, setOpenWindows] = useState<WindowId[]>([]);
   const [windowOrder, setWindowOrder] = useState<WindowId[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [photoWindows, setPhotoWindows] = useState<Map<string, { config: WindowState; photo: PhotoWork }>>(new Map());
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
@@ -149,9 +133,48 @@ const Index = () => {
     setWindowOrder((prev) => [...prev.filter((w) => w !== id), id]);
   }, []);
 
+  const openPhotoWindow = useCallback((photo: PhotoWork) => {
+    const windowId: WindowId = `photo-${photo.id}`;
+    setPhotoWindows((prev) => {
+      const next = new Map(prev);
+      if (!next.has(photo.id)) {
+        next.set(photo.id, {
+          config: {
+            id: windowId,
+            title: photo.title,
+            defaultPos: { x: 150 + Math.random() * 100, y: 60 + Math.random() * 80 },
+          },
+          photo,
+        });
+      }
+      return next;
+    });
+    openWindow(windowId);
+  }, [openWindow]);
+
+  const getWindowContent = (id: WindowId): React.ReactNode => {
+    if (id === "creative") {
+      return <CreativeWorksContent onPhotoClick={openPhotoWindow} />;
+    }
+    if (id.startsWith("photo-")) {
+      const photoId = id.replace("photo-", "");
+      const entry = photoWindows.get(photoId);
+      if (entry) return <PhotoWindowContent photo={entry.photo} />;
+    }
+    return STATIC_WINDOW_CONTENT[id] || null;
+  };
+
+  const getWindowConfig = (id: WindowId): WindowState => {
+    if (id.startsWith("photo-")) {
+      const photoId = id.replace("photo-", "");
+      const entry = photoWindows.get(photoId);
+      if (entry) return entry.config;
+    }
+    return WINDOW_CONFIGS.find((c) => c.id === id)!;
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden font-nunito">
-      {/* Toolbar */}
       <div
         className="transition-all duration-700 ease-out"
         style={{
@@ -162,9 +185,7 @@ const Index = () => {
         <Toolbar isDark={isDark} onToggleTheme={() => setIsDark(!isDark)} />
       </div>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12 relative z-10">
-        {/* Star character */}
         <div
           className="relative w-full max-w-3xl mb-[-20px] ml-[-20px] transition-all duration-700 ease-out"
           style={{
@@ -188,7 +209,6 @@ const Index = () => {
           </button>
         </div>
 
-        {/* Desktop Window */}
         <div
           className="w-full transition-all duration-700 ease-out"
           style={{
@@ -211,7 +231,6 @@ const Index = () => {
                 history/law student &amp; creative director
               </p>
 
-              {/* Navigation Icons */}
               <div
                 className="flex flex-wrap items-center justify-center gap-4 md:gap-6 pt-4 transition-all duration-700 ease-out"
                 style={{
@@ -223,7 +242,7 @@ const Index = () => {
                 <NavIcon icon={Info} label="about" onClick={() => openWindow("about")} />
                 <NavIcon icon={Link} label="links" onClick={() => openWindow("links")} />
                 <NavIcon icon={Briefcase} label="work" onClick={() => openWindow("work")} />
-                <NavIcon icon={HelpCircle} label="faq" onClick={() => openWindow("faq")} />
+                <NavIcon icon={Camera} label="creative works" onClick={() => openWindow("creative")} />
                 <NavIcon icon={Mail} label="contact" onClick={() => openWindow("contact")} />
               </div>
             </div>
@@ -231,9 +250,9 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Draggable windows */}
       {openWindows.map((id) => {
-        const config = WINDOW_CONFIGS.find((c) => c.id === id)!;
+        const config = getWindowConfig(id);
+        if (!config) return null;
         return (
           <DraggableWindow
             key={id}
@@ -244,12 +263,11 @@ const Index = () => {
             onFocus={() => focusWindow(id)}
             glowing={id === STAR_WINDOW_ID}
           >
-            {WINDOW_CONTENT[id]}
+            {getWindowContent(id)}
           </DraggableWindow>
         );
       })}
 
-      {/* Footer */}
       <footer
         className="relative z-10 pb-6 pt-4 flex flex-col items-center gap-3 transition-all duration-700 ease-out"
         style={{
