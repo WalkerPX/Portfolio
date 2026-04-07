@@ -69,8 +69,17 @@ const DraggableWindow = ({
   return (
     <div
       ref={windowRef}
-      className="fixed rounded-2xl overflow-hidden shadow-2xl border border-border w-[90vw] max-w-md"
-      style={{ left: position.x, top: position.y, zIndex }}
+      className="fixed rounded-2xl overflow-hidden shadow-2xl border border-border resize"
+      style={{
+        left: position.x,
+        top: position.y,
+        zIndex,
+        minWidth: 280,
+        minHeight: 180,
+        maxWidth: "90vw",
+        maxHeight: "80vh",
+        width: 400,
+      }}
       onPointerDown={onFocus}
     >
       {/* Title bar — draggable */}
@@ -91,7 +100,7 @@ const DraggableWindow = ({
         </button>
       </div>
       {/* Content */}
-      <div className="bg-card p-6 max-h-[60vh] overflow-y-auto">
+      <div className="bg-card p-6 overflow-y-auto" style={{ height: "calc(100% - 40px)" }}>
         {children}
       </div>
     </div>
