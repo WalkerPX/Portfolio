@@ -13,12 +13,23 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        nunito: ['Nunito', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        sky: {
+          DEFAULT: "hsl(var(--sky))",
+          bottom: "hsl(var(--sky-bottom))",
+        },
+        titlebar: {
+          DEFAULT: "hsl(var(--titlebar))",
+          foreground: "hsl(var(--titlebar-foreground))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
