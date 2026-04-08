@@ -25,11 +25,9 @@ const WalkerStatsContent = () => {
     <div className="space-y-5 text-card-foreground">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <img
-          src={import.meta.env.BASE_URL + "headshot.jpg"}
-          alt="Walker Birchfield"
-          className="w-14 h-14 rounded-full border-2 border-primary object-cover object-top"
-        />
+        <div className="w-14 h-14 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center text-2xl">
+          👋
+        </div>
         <div>
           <h2 className="text-xl font-extrabold text-primary">Walker Birchfield</h2>
           <p className="text-xs text-muted-foreground">History/Law Student · Creative Director</p>
@@ -84,15 +82,6 @@ const WalkerStatsContent = () => {
             ))}
           </div>
         )}
-      </div>
-
-      {/* Playing sports */}
-      <div className="bg-muted/50 rounded-xl p-3">
-        <div className="flex items-center gap-2 mb-2">
-          <span className="text-lg">⚽</span>
-          <span className="font-bold text-sm">Playing Sports</span>
-        </div>
-        <p className="text-xs text-muted-foreground">Football, Basketball, Baseball</p>
       </div>
 
       {/* Other interests */}

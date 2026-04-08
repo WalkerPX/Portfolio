@@ -308,7 +308,10 @@ const Index = () => {
                 <h1 className="text-4xl md:text-5xl font-nunito transition-colors duration-700 ease-in-out">
                   Hi!{" "}
                   <button
-                    className="font-extrabold italic text-primary transition-colors duration-700 ease-in-out hover:opacity-80 cursor-pointer focus:outline-none underline decoration-dotted decoration-primary/50"
+                    className="font-extrabold italic text-primary transition-all duration-300 ease-in-out cursor-pointer focus:outline-none"
+                    style={{ textDecoration: "none" }}
+                    onMouseEnter={e => (e.currentTarget.style.textShadow = "0 0 12px hsl(35 92% 55% / 0.9), 0 0 28px hsl(35 92% 55% / 0.5), 0 0 48px hsl(35 92% 55% / 0.3)")}
+                    onMouseLeave={e => (e.currentTarget.style.textShadow = "none")}
                     onClick={() => openWindow("walker-stats")}
                     title="Click for stats"
                   >
