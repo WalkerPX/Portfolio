@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script>
+      // Redirect to the main app, preserving the path
+      const repo = '/Portfolio';
+      sessionStorage.setItem('redirect', window.location.pathname);
+      window.location.replace(repo + '/');
+    </script>
+  </head>
+  <body></body>
+</html>
