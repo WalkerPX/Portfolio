@@ -163,8 +163,8 @@ const Index = () => {
     if (id === "creative") return <CreativeWorksContent onPhotoClick={openPhotoWindow} />;
     if (id === "work") return (
       <WorkContent
-        onOpenResume={() => openPDFWindow("resume", "Resume — Walker Birchfield", "/resume.pdf", "/resume.pdf", "Walker_Birchfield_Resume.pdf")}
-        onOpenWritingSample={() => openPDFWindow("writing-sample", "Writing Sample — Walker Birchfield", "/writing-sample.pdf", "/writing-sample.pdf", "Walker_Birchfield_Writing_Sample.pdf")}
+        onOpenResume={() => openPDFWindow("resume", "Resume — Walker Birchfield", import.meta.env.BASE_URL + "resume.pdf", import.meta.env.BASE_URL + "resume.pdf", "Walker_Birchfield_Resume.pdf")}
+        onOpenWritingSample={() => openPDFWindow("writing-sample", "Writing Sample — Walker Birchfield", import.meta.env.BASE_URL + "writing-sample.pdf", import.meta.env.BASE_URL + "writing-sample.pdf", "Walker_Birchfield_Writing_Sample.pdf")}
       />
     );
     if (id === "walker-stats") return <WalkerStatsContent />;
@@ -308,7 +308,7 @@ const Index = () => {
                 <h1 className="text-4xl md:text-5xl font-nunito transition-colors duration-700 ease-in-out">
                   Hi!{" "}
                   <button
-                    className="font-extrabold italic text-primary transition-colors duration-700 ease-in-out cursor-pointer focus:outline-none hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.8),0_0_24px_hsl(var(--primary)/0.4)]"
+                    className="font-extrabold italic text-primary transition-colors duration-700 ease-in-out hover:opacity-80 cursor-pointer focus:outline-none underline decoration-dotted decoration-primary/50"
                     onClick={() => openWindow("walker-stats")}
                     title="Click for stats"
                   >

@@ -25,12 +25,12 @@ const WorkContent = ({ onOpenResume, onOpenWritingSample }: WorkContentProps) =>
               <span className="font-bold text-sm">Resume</span>
             </div>
             <p className="text-xs text-muted-foreground leading-snug">
-              Walker Birchfield — History/Law student, creative director &amp; digital media specialist.
+              Walker Birchfield — Student, Creative Director &amp; Digital Media Specialist.
             </p>
             <span className="text-xs text-primary group-hover:underline mt-1">Click to view →</span>
           </button>
           <a
-            href="/resume.pdf"
+            href={import.meta.env.BASE_URL + "resume.pdf"}
             download="Walker_Birchfield_Resume.pdf"
             className="absolute top-3 right-3 text-muted-foreground hover:text-primary transition-colors"
             title="Download resume"
@@ -51,12 +51,12 @@ const WorkContent = ({ onOpenResume, onOpenWritingSample }: WorkContentProps) =>
               <span className="font-bold text-sm">Writing Sample</span>
             </div>
             <p className="text-xs text-muted-foreground leading-snug">
-              Academic paper — a 16-page research paper demonstrating analytical and written communication skills.
+              Academic Paper — A research paper written during my senior research history class on the effects of American Intervention during the Vietnam War.
             </p>
             <span className="text-xs text-primary group-hover:underline mt-1">Click to view →</span>
           </button>
           <a
-            href="/writing-sample.pdf"
+            href={import.meta.env.BASE_URL + "writing-sample.pdf"}
             download="Walker_Birchfield_Writing_Sample.pdf"
             className="absolute top-3 right-3 text-muted-foreground hover:text-primary transition-colors"
             title="Download writing sample"
