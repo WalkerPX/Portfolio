@@ -6,7 +6,7 @@ import { componentTagger } from "lovable-tagger";
 
 export default defineConfig(({ mode }) => ({
   // Only set the base for production (GitHub Pages)
-  base: mode === "production" ? "/" : "/",
+base: mode === "production" ? "/portfolio/" : "/",
 
   server: {
     host: "::",
