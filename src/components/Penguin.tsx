@@ -50,7 +50,7 @@ const Penguin = ({ isMuted, isDark, onHover }: PenguinProps) => {
     if (isMuted) return;
 
     if (!audioRef.current) {
-      const audio = new Audio("/relaxing.mp3");
+      const audio = new Audio(import.meta.env.BASE_URL + "relaxing.mp3");
       audio.loop = true;
       audio.volume = 0.4;
       audioRef.current = audio;

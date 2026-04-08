@@ -308,7 +308,7 @@ const Index = () => {
                 <h1 className="text-4xl md:text-5xl font-nunito transition-colors duration-700 ease-in-out">
                   Hi!{" "}
                   <button
-                    className="font-extrabold italic text-primary transition-colors duration-700 ease-in-out hover:opacity-80 cursor-pointer focus:outline-none underline decoration-dotted decoration-primary/50"
+                    className="font-extrabold italic text-primary transition-colors duration-700 ease-in-out cursor-pointer focus:outline-none hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.8),0_0_24px_hsl(var(--primary)/0.4)]"
                     onClick={() => openWindow("walker-stats")}
                     title="Click for stats"
                   >
