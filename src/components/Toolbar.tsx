@@ -1,16 +1,15 @@
 import { Sun, Moon, Volume2, VolumeX } from "lucide-react";
-import { useState } from "react";
 
 interface ToolbarProps {
   isDark: boolean;
   onToggleTheme: () => void;
+  isMuted: boolean;
+  onToggleMute: () => void;
 }
 
-const Toolbar = ({ isDark, onToggleTheme }: ToolbarProps) => {
-  const [isMuted, setIsMuted] = useState(false);
-
+const Toolbar = ({ isDark, onToggleTheme, isMuted, onToggleMute }: ToolbarProps) => {
   return (
-    <div className="fixed top-4 left-4 z-50 flex items-center gap-3">
+    <div className="fixed top-4 left-4 z-[9999] flex items-center gap-3">
       <button
         onClick={onToggleTheme}
         className="text-foreground/70 hover:text-primary transition-colors"
@@ -19,15 +18,11 @@ const Toolbar = ({ isDark, onToggleTheme }: ToolbarProps) => {
         {isDark ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6" />}
       </button>
       <button
-        onClick={() => setIsMuted(!isMuted)}
+        onClick={onToggleMute}
         className="text-foreground/70 hover:text-primary transition-colors"
         aria-label="Toggle mute"
       >
-        {isMuted ? (
-          <VolumeX className="w-6 h-6" />
-        ) : (
-          <Volume2 className="w-6 h-6" />
-        )}
+        {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
       </button>
     </div>
   );

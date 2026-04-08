@@ -10,7 +10,7 @@ const PhotoWindowContent = ({ photo }: PhotoWindowContentProps) => {
       <img
         src={photo.src}
         alt={photo.title}
-        className="w-full rounded-lg object-contain max-h-[50vh]"
+        className="w-full rounded-lg object-contain"
       />
       <div className="space-y-1 text-sm">
         <p>
