@@ -1,6 +1,26 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import purdueBallState from "@/assets/photography/purdue-vs-ball-state.jpg";
+import PhotoLightbox, { GalleryPhoto } from "@/components/PhotoLightbox";
 
+// All creative works as lightbox-ready thumbnails
+const CREATIVE_PHOTOS: GalleryPhoto[] = [
+  { src: import.meta.env.BASE_URL + "images/RyanBrownRunning.jpg",               title: "Ryan Browne Running vs Ball State",          client: "Ross-Ade Brigade",    date: "August 30, 2025" },
+  { src: import.meta.env.BASE_URL + "images/RyanBrowneTouchdownCelebration.jpg", title: "Ryan Browne Celebrating Touchdown",          client: "Ross-Ade Brigade",    date: "October 4, 2025" },
+  { src: import.meta.env.BASE_URL + "images/IllinoisGamedayGraphic.jpg",         title: "Purdue vs Illinois Gameday",                 client: "Ross-Ade Brigade",    date: "October 3, 2025" },
+  { src: import.meta.env.BASE_URL + "images/NotreDameGraphic .jpg",              title: "Purdue vs Notre Dame Gameday",               client: "Ross-Ade Brigade",    date: "September 19, 2025" },
+  { src: import.meta.env.BASE_URL + "images/OfficerApplication.jpg",             title: "Officer Application",                        client: "Ross-Ade Brigade",    date: "August 22, 2025" },
+  { src: import.meta.env.BASE_URL + "images/SpringShowcaseGraphic.jpg",          title: "Spring Showcase",                            client: "Ross-Ade Brigade",    date: "April 12, 2025" },
+  { src: import.meta.env.BASE_URL + "images/StudentsWantedGraphic.jpg",          title: "Student Recruitment",                        client: "Ross-Ade Brigade",    date: "April 3, 2025" },
+  { src: import.meta.env.BASE_URL + "images/BrodyBatFlip.jpg",                   title: "Brody Chrisman Bat Flip",                    client: "Lafayette Aviators",  date: "July 12, 2025" },
+  { src: import.meta.env.BASE_URL + "images/GavinSmithHit.jpg",                  title: "Gavin Smith Grand Slam",                     client: "Lafayette Aviators",  date: "June 17, 2025" },
+  { src: import.meta.env.BASE_URL + "images/BrodyChrismanWalkoffCelebrate.jpg",  title: "Brody Chrisman Walk-Off Win Celebration",    client: "Lafayette Aviators",  date: "July 30, 2025" },
+  { src: import.meta.env.BASE_URL + "images/200winsgraphic.jpg",                 title: "200 Career Wins",                            client: "Lafayette Aviators",  date: "July 22, 2025" },
+  { src: import.meta.env.BASE_URL + "images/BrodyCardGraphic.jpg",               title: "Baseball Card",                              client: "Lafayette Aviators",  date: "August 5, 2025" },
+  { src: import.meta.env.BASE_URL + "images/NationalMascotDayGraphics.jpg",      title: "National Mascot Day",                        client: "Lafayette Aviators",  date: "June 17, 2025" },
+  { src: import.meta.env.BASE_URL + "images/ThankYouFansGraphic.jpg",            title: "Thank You Fans",                             client: "Lafayette Aviators",  date: "August 7, 2025" },
+];
+
+// Keep PhotoWork type for compatibility with Index.tsx openPhotoWindow
 export interface PhotoWork {
   id: string;
   src: string;
@@ -10,16 +30,7 @@ export interface PhotoWork {
   date: string;
 }
 
-export const PHOTO_WORKS: PhotoWork[] = [
-  {
-    id: "purdue-ball-state",
-    src: purdueBallState,
-    client: "Ross-Ade Brigade",
-    category: "Photography",
-    title: "Purdue vs. Ball State Football",
-    date: "August 30th, 2025",
-  },
-];
+export const PHOTO_WORKS: PhotoWork[] = [];
 
 interface CreativeWorksContentProps {
   onPhotoClick: (photo: PhotoWork) => void;
@@ -27,6 +38,7 @@ interface CreativeWorksContentProps {
 
 const CreativeWorksContent = ({ onPhotoClick }: CreativeWorksContentProps) => {
   const navigate = useNavigate();
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   return (
     <div className="space-y-4 text-card-foreground">
@@ -48,11 +60,13 @@ const CreativeWorksContent = ({ onPhotoClick }: CreativeWorksContentProps) => {
         </button>
         .
       </p>
+
+      {/* Thumbnail grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        {PHOTO_WORKS.map((photo) => (
+        {CREATIVE_PHOTOS.map((photo, i) => (
           <button
-            key={photo.id}
-            onClick={() => onPhotoClick(photo)}
+            key={i}
+            onClick={() => setLightboxIndex(i)}
             className="group relative rounded-lg overflow-hidden border border-border hover:border-primary transition-colors cursor-pointer aspect-square"
           >
             <img
@@ -67,6 +81,16 @@ const CreativeWorksContent = ({ onPhotoClick }: CreativeWorksContentProps) => {
           </button>
         ))}
       </div>
+
+      {lightboxIndex !== null && (
+        <PhotoLightbox
+          photos={CREATIVE_PHOTOS}
+          index={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onNext={() => setLightboxIndex((lightboxIndex + 1) % CREATIVE_PHOTOS.length)}
+          onPrev={() => setLightboxIndex((lightboxIndex - 1 + CREATIVE_PHOTOS.length) % CREATIVE_PHOTOS.length)}
+        />
+      )}
     </div>
   );
 };

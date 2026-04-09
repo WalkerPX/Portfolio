@@ -1,4 +1,5 @@
 import { useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 export interface GalleryPhoto {
@@ -28,19 +29,23 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
 
   useEffect(() => {
     window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
+    // Prevent body scroll while lightbox is open
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", handleKey);
+      document.body.style.overflow = "";
+    };
   }, [handleKey]);
 
-  return (
+  const content = (
     <div
       onClick={onClose}
       style={{
         position: "fixed",
-        top: 0,
-        left: 0,
+        inset: 0,
         width: "100vw",
         height: "100vh",
-        zIndex: 99999,
+        zIndex: 999999,
         background: "rgba(0,0,0,0.88)",
         display: "flex",
         alignItems: "center",
@@ -50,8 +55,8 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
       {/* Close */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
-        style={{ zIndex: 100000 }}
+        style={{ position: "absolute", top: 16, right: 16, zIndex: 1000000 }}
+        className="text-white/70 hover:text-white transition-colors"
       >
         <X className="w-8 h-8" />
       </button>
@@ -60,8 +65,8 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
       {photos.length > 1 && (
         <button
           onClick={(e) => { e.stopPropagation(); onPrev(); }}
-          className="absolute left-4 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
-          style={{ top: "50%", transform: "translateY(-50%)", zIndex: 100000 }}
+          style={{ position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)", zIndex: 1000000 }}
+          className="text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
@@ -86,7 +91,7 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
           {photo.description && <p className="text-white/60 text-sm max-w-lg">{photo.description}</p>}
         </div>
         <p className="text-white/40 text-xs">
-          {index + 1} / {photos.length} · ← → arrow keys to navigate · Esc to close
+          {index + 1} / {photos.length} · ← → arrow keys · Esc to close
         </p>
       </div>
 
@@ -94,14 +99,17 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
       {photos.length > 1 && (
         <button
           onClick={(e) => { e.stopPropagation(); onNext(); }}
-          className="absolute right-4 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
-          style={{ top: "50%", transform: "translateY(-50%)", zIndex: 100000 }}
+          style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", zIndex: 1000000 }}
+          className="text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
         >
           <ChevronRight className="w-8 h-8" />
         </button>
       )}
     </div>
   );
+
+  // Render into document.body via portal — escapes all parent transforms/stacking contexts
+  return createPortal(content, document.body);
 };
 
 export default PhotoLightbox;
