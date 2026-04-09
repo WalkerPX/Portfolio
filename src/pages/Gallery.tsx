@@ -1,96 +1,64 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import WaveBackground from "@/components/WaveBackground";
-import Penguin from "@/components/Penguin";
-import Toolbar from "@/components/Toolbar";
+import { Camera, PenTool, Folders } from "lucide-react";
+import PageShell from "@/components/PageShell";
+
+const CATEGORIES = [
+  {
+    route: "/gallery/photography",
+    icon: Camera,
+    label: "Photography",
+    description: "Game day, portrait, and event photography.",
+    color: "from-blue-500/20 to-blue-600/10",
+    border: "hover:border-blue-400",
+  },
+  {
+    route: "/gallery/graphic-design",
+    icon: PenTool,
+    label: "Graphic Design",
+    description: "Posters, social graphics, and visual branding.",
+    color: "from-orange-500/20 to-orange-600/10",
+    border: "hover:border-orange-400",
+  },
+  {
+    route: "/gallery/other-projects",
+    icon: Folders,
+    label: "Other Projects",
+    description: "Videography, campaigns, and more.",
+    color: "from-purple-500/20 to-purple-600/10",
+    border: "hover:border-purple-400",
+  },
+];
 
 const Gallery = () => {
   const navigate = useNavigate();
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains("dark")
-  );
-  const [isMuted, setIsMuted] = useState(false);
-  const [visible, setVisible] = useState(false);
-
-  // Sync dark mode with html class
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", isDark);
-  }, [isDark]);
-
-  // Entrance animation
-  useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 30);
-    return () => clearTimeout(t);
-  }, []);
-
-  const handleBack = () => {
-    setVisible(false);
-    setTimeout(() => navigate("/"), 350);
-  };
 
   return (
-    <div
-      className="min-h-screen flex flex-col relative overflow-hidden font-nunito"
-      style={{ background: "hsl(var(--background))" }}
-    >
-      <WaveBackground isDark={isDark} />
+    <PageShell backTo="/">
+      <div className="w-full max-w-4xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-2">Gallery</h1>
+        <p className="text-muted-foreground text-sm mb-10">
+          Browse my creative portfolio by category.
+        </p>
 
-      {/* Toolbar (top left) */}
-      <div className="pointer-events-none">
-        <div className="pointer-events-auto">
-          <Toolbar
-            isDark={isDark}
-            onToggleTheme={() => setIsDark(!isDark)}
-            isMuted={isMuted}
-            onToggleMute={() => setIsMuted(!isMuted)}
-          />
-        </div>
-      </div>
-
-      {/* Back button (top right) */}
-      <button
-        onClick={handleBack}
-        className="fixed top-4 right-4 z-[9999] flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border hover:border-primary hover:text-primary text-foreground/70 transition-colors text-sm font-semibold shadow-md"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back
-      </button>
-
-      {/* Page content — animated entrance */}
-      <div
-        className="flex-1 flex flex-col items-center relative z-10 px-6 py-20"
-        style={{
-          opacity: visible ? 1 : 0,
-          transform: visible ? "translateY(0) scale(1)" : "translateY(24px) scale(0.97)",
-          transition: "opacity 0.45s ease-out, transform 0.45s ease-out",
-        }}
-      >
-        <div className="w-full max-w-5xl">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-2">
-            Gallery
-          </h1>
-          <p className="text-muted-foreground text-sm mb-8">
-            A full portfolio of my creative work — photography, videography, and design.
-          </p>
-
-          {/* Gallery grid — add photos here */}
-          <div className="columns-2 md:columns-3 gap-4 space-y-4">
-            {/* Placeholder — replace with your actual photos */}
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="break-inside-avoid rounded-xl bg-muted/50 border border-border aspect-square flex items-center justify-center text-muted-foreground text-sm"
-              >
-                Photo {i + 1}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {CATEGORIES.map(({ route, icon: Icon, label, description, color, border }) => (
+            <button
+              key={route}
+              onClick={() => navigate(route)}
+              className={`group flex flex-col items-center gap-4 p-8 rounded-2xl border border-border ${border} bg-gradient-to-br ${color} transition-all duration-200 hover:scale-[1.03] hover:shadow-xl cursor-pointer text-center`}
+            >
+              <div className="w-16 h-16 rounded-2xl bg-card border border-border flex items-center justify-center group-hover:border-primary transition-colors">
+                <Icon className="w-8 h-8 text-foreground/60 group-hover:text-primary transition-colors" strokeWidth={1.5} />
               </div>
-            ))}
-          </div>
+              <div>
+                <p className="font-extrabold text-lg text-foreground group-hover:text-primary transition-colors">{label}</p>
+                <p className="text-xs text-muted-foreground mt-1">{description}</p>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
-
-      <Penguin isMuted={isMuted} isDark={isDark} />
-    </div>
+    </PageShell>
   );
 };
 

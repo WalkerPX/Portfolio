@@ -12,6 +12,7 @@ import WalkerStatsContent from "@/components/WalkerStatsContent";
 import WaveBackground from "@/components/WaveBackground";
 import Penguin from "@/components/Penguin";
 import starCharacter from "@/assets/star-character.png";
+import { useAppContext } from "@/context/AppContext";
 
 type WindowId =
   | "about" | "links" | "work" | "creative" | "contact" | "star" | "walker-stats"
@@ -55,18 +56,15 @@ const playSound = (freq: number, type: OscillatorType, duration: number, volume 
 const STAR_WINDOW_ID: WindowId = "star";
 
 const Index = () => {
-  const [isDark, setIsDark] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const { isDark, setIsDark, isMuted, setIsMuted } = useAppContext();
   const [openWindows, setOpenWindows] = useState<WindowId[]>([]);
   const [windowOrder, setWindowOrder] = useState<WindowId[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [photoWindows, setPhotoWindows] = useState<
     Map<string, { config: WindowState; photo: PhotoWork }>
   >(new Map());
-  const isMutedRef = useRef(isMuted);
+  const isMutedRef = useRef(false);
 
-  useEffect(() => { isMutedRef.current = isMuted; }, [isMuted]);
-  useEffect(() => { document.documentElement.classList.toggle("dark", isDark); }, [isDark]);
   useEffect(() => { const t = setTimeout(() => setLoaded(true), 50); return () => clearTimeout(t); }, []);
 
   const sfx = useCallback((freq: number, type: OscillatorType = "sine", dur = 0.18) => {
@@ -274,12 +272,7 @@ const Index = () => {
       <div className="transition-all duration-700 ease-out pointer-events-none"
         style={{ opacity: loaded ? 1 : 0, transform: loaded ? "translateX(0)" : "translateX(-40px)" }}>
         <div className="pointer-events-auto">
-          <Toolbar
-            isDark={isDark}
-            onToggleTheme={() => setIsDark(!isDark)}
-            isMuted={isMuted}
-            onToggleMute={() => setIsMuted(!isMuted)}
-          />
+          <Toolbar />
         </div>
       </div>
 
@@ -310,7 +303,7 @@ const Index = () => {
                   <button
                     className="font-extrabold italic text-primary transition-all duration-300 ease-in-out cursor-pointer focus:outline-none"
                     style={{ textDecoration: "none" }}
-                    onMouseEnter={e => (e.currentTarget.style.textShadow = "0 0 12px hsl(35 92% 55% / 0.9), 0 0 28px hsl(35 92% 55% / 0.5), 0 0 48px hsl(35 92% 55% / 0.3)")}
+                    onMouseEnter={e => (e.currentTarget.style.textShadow = "0 0 12px hsl(35 92% 55% / 0.9), 0 0 28px hsl(35 92% 55% / 0.5)")}
                     onMouseLeave={e => (e.currentTarget.style.textShadow = "none")}
                     onClick={() => openWindow("walker-stats")}
                     title="Click for stats"
@@ -357,8 +350,6 @@ const Index = () => {
 
       {/* Penguin */}
       <Penguin
-        isMuted={isMuted}
-        isDark={isDark}
         onHover={() => sfx(440, "sine", 0.1)}
       />
 
