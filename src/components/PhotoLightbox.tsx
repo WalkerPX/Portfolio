@@ -33,14 +33,25 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
 
   return (
     <div
-      className="fixed inset-0 z-[9999] flex items-center justify-center"
-      style={{ background: "rgba(0,0,0,0.88)" }}
       onClick={onClose}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 99999,
+        background: "rgba(0,0,0,0.88)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {/* Close */}
       <button
         onClick={onClose}
         className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
+        style={{ zIndex: 100000 }}
       >
         <X className="w-8 h-8" />
       </button>
@@ -49,7 +60,8 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
       {photos.length > 1 && (
         <button
           onClick={(e) => { e.stopPropagation(); onPrev(); }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
+          className="absolute left-4 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
+          style={{ top: "50%", transform: "translateY(-50%)", zIndex: 100000 }}
         >
           <ChevronLeft className="w-8 h-8" />
         </button>
@@ -57,17 +69,19 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
 
       {/* Image + info */}
       <div
-        className="flex flex-col items-center gap-4 max-w-[90vw] max-h-[90vh]"
+        className="flex flex-col items-center gap-4"
+        style={{ maxWidth: "85vw", maxHeight: "90vh" }}
         onClick={(e) => e.stopPropagation()}
       >
         <img
           src={photo.src}
           alt={photo.title}
-          className="max-w-[80vw] max-h-[70vh] object-contain rounded-xl shadow-2xl"
+          style={{ maxWidth: "80vw", maxHeight: "68vh", objectFit: "contain" }}
+          className="rounded-xl shadow-2xl"
         />
         <div className="text-center text-white space-y-1">
           <p className="font-bold text-lg">{photo.title}</p>
-          {photo.client && <p className="text-white/70 text-sm">Client: {photo.client}</p>}
+          {photo.client && <p className="text-white/70 text-sm">{photo.client}</p>}
           {photo.date && <p className="text-white/60 text-sm">{photo.date}</p>}
           {photo.description && <p className="text-white/60 text-sm max-w-lg">{photo.description}</p>}
         </div>
@@ -80,7 +94,8 @@ const PhotoLightbox = ({ photos, index, onClose, onNext, onPrev }: PhotoLightbox
       {photos.length > 1 && (
         <button
           onClick={(e) => { e.stopPropagation(); onNext(); }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
+          className="absolute right-4 text-white/70 hover:text-white transition-colors bg-black/30 rounded-full p-2"
+          style={{ top: "50%", transform: "translateY(-50%)", zIndex: 100000 }}
         >
           <ChevronRight className="w-8 h-8" />
         </button>
