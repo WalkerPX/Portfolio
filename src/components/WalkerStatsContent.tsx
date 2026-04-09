@@ -85,9 +85,6 @@ const WalkerStatsContent = () => {
           </div>
         )}
       </div>
-        <p className="text-xs text-muted-foreground">Football, Basketball, Baseball</p>
-      </div>
-
       {/* Other interests */}
       <div>
         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Other Interests</p>
