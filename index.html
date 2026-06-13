@@ -1,31 +1,1128 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Walker.OS — Walker Birchfield</title>
+  <meta name="description" content="Walker Birchfield — History/Law Student & Creative Director" />
+  <meta property="og:title" content="Walker Birchfield" />
+  <meta property="og:description" content="Creative portfolio of Walker Birchfield" />
+  <meta property="og:type" content="website" />
+  <link rel="icon" href="assets/logo-w-transparent.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet" />
 
-    <!-- Document title and social previews -->
-    <title>Walker Birchfield</title>
-    <meta name="description" content="Walker Birchfield — History/Law student & creative director" />
-    <meta name="author" content="Walker Birchfield" />
+  <style>
+    /* ===== TOKENS — Dark Black + Icy Blue ===== */
+    :root {
+      --bg-deep: #141420;
+      --bg-surface: #1A1A2E;
+      --bg-elevated: #222240;
+      --bg-hover: rgba(107,159,255,0.1);
+      --accent: #8CB4FF;
+      --accent-dim: #6B9FFF;
+      --accent-glow: rgba(107,159,255,0.3);
+      --text: #F0F4FF;
+      --text-dim: #C0C8E0;
+      --text-muted: #8894B0;
+      --border: rgba(107,159,255,0.18);
+      --border-strong: rgba(107,159,255,0.3);
+      --font-ui: 'JetBrains Mono', monospace;
+      --font-body: 'Inter', -apple-system, sans-serif;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow-window: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+    }
 
-    <!-- Open Graph / social preview -->
-    <meta property="og:title" content="Walker Birchfield" />
-    <meta property="og:description" content="Creative portfolio of Walker Birchfield" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="/logo-w.png" />
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{width:100%;height:100%;background:var(--bg-deep);color:var(--text);font-family:var(--font-body);overflow:hidden;user-select:none;-webkit-font-smoothing:antialiased}
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="/logo-w.png" />
+    /* ===== CRT OVERLAY ===== */
+    .crt{position:fixed;inset:0;pointer-events:none;z-index:9999}
+    .crt::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.02) 2px,rgba(0,0,0,0.02) 4px)}
+    .crt::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.5) 100%)}
+    .crt.scan::before{background:linear-gradient(0deg,transparent 49.5%,rgba(107,159,255,0.012) 50%,transparent 50.5%);background-size:100% 4px;animation:scan 10s linear infinite}
+    @keyframes scan{0%{transform:translateY(0)}100%{transform:translateY(4px)}}
 
-    <!-- favicon -->
-    <link rel="icon" href="/logo-w.png" />
-  </head>
+    /* ===== BOOT SCREEN ===== */
+    #boot{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#141428;z-index:100;transition:opacity .5s ease,transform 1.2s var(--ease)}
+    #boot.hidden{opacity:0;transform:scale(4);pointer-events:none}
 
-  <body>
-    <div id="root"></div>
+    .monitor{position:relative;width:780px;max-width:92vw;cursor:pointer;transition:transform .3s var(--ease)}
+    .monitor:hover{transform:scale(1.012)}
 
-    <!-- Vite entry point -->
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    .bezel{
+      position:relative;
+      background:linear-gradient(160deg,#2a2a50,#202040,#181830);
+      border:2px solid #3a3a60;
+      border-radius:22px;padding:24px;
+      box-shadow:0 30px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.07),0 0 60px rgba(107,159,255,.06),0 0 120px rgba(107,159,255,.08)
+    }
+    .screen{
+      position:relative;aspect-ratio:16/10;
+      background:#141430;border-radius:10px;overflow:hidden;border:1px solid #2a2a50;
+      transition:background .8s ease
+    }
+    .screen::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.015),transparent 40%,transparent 70%,rgba(255,255,255,.008) 100%);z-index:5;pointer-events:none}
+
+    /* CRT warm-up */
+    .screen.warm{animation:warmup .7s ease forwards}
+    @keyframes warmup{
+      0%{filter:brightness(0) saturate(0)}
+      25%{filter:brightness(.15) saturate(.2)}
+      50%{filter:brightness(.6) saturate(.7)}
+      75%{filter:brightness(.9) saturate(1.1)}
+      100%{filter:brightness(1) saturate(1)}
+    }
+
+    .power-led{
+      position:absolute;bottom:11px;right:calc(50% - 4px);
+      width:5px;height:5px;border-radius:50%;
+      background:#141a14;transition:all .8s ease;box-shadow:0 0 4px rgba(0,0,0,.5)
+    }
+    .power-led.on{background:#00ff88;box-shadow:0 0 8px rgba(0,255,136,.5),0 0 25px rgba(0,255,136,.15)}
+    .power-led .pl{position:absolute;top:9px;left:50%;transform:translateX(-50%);font:7px/1 var(--font-ui);color:#333;text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+    .power-led.on .pl{color:#4a8}
+
+    .stand{width:180px;height:45px;margin:-2px auto 0;background:linear-gradient(180deg,#2a2a50,#1a1a38,#101028);border:1px solid #3a3a60;border-top:none;border-radius:0 0 14px 14px}
+    .base{width:280px;height:10px;margin:0 auto;background:linear-gradient(180deg,#2a2a50,#141428);border:1px solid #3a3a60;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+
+    /* Boot off state */
+    .off-state{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2;transition:opacity .4s ease}
+    .off-state.hide{opacity:0;pointer-events:none}
+    .off-state .logo{width:100px;height:100px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;filter:drop-shadow(0 0 24px rgba(107,159,255,.4)) drop-shadow(0 0 60px rgba(107,159,255,.15))}
+    .off-state .logo img{width:100px;height:100px;object-fit:contain}
+    .off-state .wname{font:14px/1 var(--font-ui);color:var(--text-dim);letter-spacing:3px;text-transform:uppercase}
+    .off-state .wver{font:11px/1 var(--font-ui);color:var(--text-muted);margin-top:4px}
+    .off-state .hint{font:11px/1 var(--font-ui);color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-top:28px;animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:.25}50%{opacity:.7}}
+
+    /* Terminal boot */
+    .term{position:absolute;inset:0;padding:28px 30px;font:13px/1.65 var(--font-ui);color:#b0bcd0;opacity:0;z-index:3;overflow:hidden}
+    .term.show{opacity:1;transition:opacity .3s ease}
+    .term .l{opacity:0;white-space:pre-wrap;word-break:break-word}
+    .term .l.in{opacity:1}
+    .term .l .ac{color:var(--accent)}
+    .term .l .ok{color:#00d488}
+    .term .l .dim{color:var(--text-muted)}
+    .term .l .hl{color:#b0b0ff;font-weight:500}
+    .term .cl{display:flex;align-items:center;color:var(--accent)}
+    .term .cb{display:inline-block;width:8px;height:17px;background:var(--accent);margin-left:5px;animation:cb .7s step-end infinite}
+    @keyframes cb{0%,100%{opacity:1}50%{opacity:0}}
+
+    /* ===== DESKTOP ===== */
+    #desktop{position:fixed;inset:0;z-index:50;opacity:0;transition:opacity .6s ease}
+    #desktop.in{opacity:1}
+    .wp{position:absolute;inset:0;
+      background:
+        radial-gradient(ellipse at 25% 30%,rgba(107,159,255,.07) 0%,transparent 50%),
+        radial-gradient(ellipse at 70% 70%,rgba(74,128,230,.05) 0%,transparent 40%),
+        linear-gradient(165deg,#141420,#16162a 25%,#181830 50%,#16162a 75%,#141420)
+    }
+    .grid{position:absolute;inset:0;
+      background-image:linear-gradient(rgba(107,159,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(107,159,255,.035) 1px,transparent 1px);
+      background-size:60px 60px
+    }
+
+    /* ===== TASKBAR — Primary Launcher ===== */
+    .tb{
+      position:fixed;bottom:0;left:0;right:0;
+      height:46px;
+      background:rgba(16,16,28,.92);
+      backdrop-filter:blur(24px) saturate(1.2);
+      -webkit-backdrop-filter:blur(24px) saturate(1.2);
+      border-top:1px solid rgba(107,159,255,.1);
+      display:flex;align-items:center;
+      padding:0 8px;
+      z-index:60
+    }
+    .tb-start{
+      width:36px;height:36px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:var(--radius-sm);
+      background:rgba(107,159,255,.06);
+      border:1px solid rgba(107,159,255,.1);
+      color:var(--accent);font-weight:700;font-size:16px;font-family:var(--font-ui);
+      cursor:pointer;transition:all .15s ease;flex-shrink:0
+    }
+    .tb-start:hover{background:rgba(107,159,255,.14);box-shadow:0 0 16px rgba(107,159,255,.08)}
+    .tb-div{width:1px;height:26px;background:rgba(107,159,255,.1);margin:0 8px;flex-shrink:0}
+    .tb-apps{display:flex;gap:2px;flex:1;padding:0 4px;align-items:center;overflow-x:auto}
+    .tb-apps::-webkit-scrollbar{height:0}
+    .tb-app{
+      width:38px;height:34px;
+      display:flex;align-items:center;justify-content:center;
+      border-radius:var(--radius-sm);
+      border:1px solid transparent;
+      cursor:pointer;position:relative;
+      transition:all .12s ease
+    }
+    .tb-app:hover{border-color:rgba(107,159,255,.1);background:rgba(107,159,255,.05)}
+    .tb-app.on{background:rgba(107,159,255,.08);border-color:rgba(107,159,255,.1)}
+    .tb-app.on::after{content:'';position:absolute;bottom:-1px;left:20%;right:20%;height:2px;background:var(--accent);border-radius:1px}
+    .tb-app img{width:22px;height:22px;object-fit:contain;transition:transform .15s ease;pointer-events:none}
+    .tb-app:hover img{transform:scale(1.25)}
+
+    /* Taskbar tooltip — fixed so it's never clipped by overflow */
+    .tb-ttip{
+      position:fixed;bottom:52px;
+      padding:4px 12px;border-radius:5px;
+      background:rgba(20,20,36,.95);backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      border:1px solid rgba(107,159,255,.12);
+      font:11px/1.3 var(--font-ui);color:#fff;white-space:nowrap;letter-spacing:.3px;
+      opacity:0;pointer-events:none;transition:opacity .12s ease;z-index:999;
+      transform:translateX(-50%)
+    }
+    .tb-ttip.show{opacity:1}
+    .tb-ttip::after{
+      content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);
+      width:0;height:0;
+      border-left:5px solid transparent;
+      border-right:5px solid transparent;
+      border-top:5px solid rgba(20,20,36,.95)
+    }
+
+    .tb-tray{
+      display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:8px;padding-left:10px;
+      border-left:1px solid rgba(107,159,255,.1)
+    }
+    .tb-tray .ti{font-size:12px;opacity:.5;cursor:pointer;transition:opacity .15s ease}
+    .tb-tray .ti:hover{opacity:1}
+    .tb-clock{font:11px/1 var(--font-ui);color:var(--text-dim);padding:3px 6px;border-radius:4px;cursor:pointer;transition:background .15s ease}
+    .tb-clock:hover{background:rgba(255,255,255,.03)}
+
+    /* ===== FULLSCREEN TAB BAR ===== */
+    .mx-tabs{
+      position:fixed;top:0;left:0;right:0;
+      height:34px;
+      background:rgba(16,16,28,.94);
+      backdrop-filter:blur(24px) saturate(1.2);
+      -webkit-backdrop-filter:blur(24px) saturate(1.2);
+      border-bottom:1px solid rgba(107,159,255,.1);
+      display:none;align-items:center;
+      padding:0 6px;gap:3px;
+      z-index:61
+    }
+    .mx-tabs.show{display:flex}
+    .mx-tabs .mt{
+      height:26px;padding:0 10px;
+      display:flex;align-items:center;gap:5px;
+      border-radius:var(--radius-sm);
+      cursor:pointer;font:11px/1 var(--font-ui);color:var(--text-dim);
+      transition:all .12s ease;position:relative
+    }
+    .mx-tabs .mt:hover{background:rgba(107,159,255,.05)}
+    .mx-tabs .mt.on{background:rgba(107,159,255,.08);color:var(--text)}
+    .mx-tabs .mt .mti{font-size:13px}
+    .mx-tabs .mt img{width:14px;height:14px;object-fit:contain;pointer-events:none}
+    .mx-tabs .mt .mtc{
+      margin-left:2px;opacity:0;font-size:10px;cursor:pointer;transition:opacity .12s ease
+    }
+    .mx-tabs .mt:hover .mtc{opacity:.5}
+    .mx-tabs .mt .mtc:hover{opacity:1!important}
+
+    /* ===== WINDOWS ===== */
+    .w{
+      position:absolute;
+      min-width:320px;min-height:180px;
+      background:rgba(20,20,36,.95);
+      backdrop-filter:blur(32px);
+      -webkit-backdrop-filter:blur(32px);
+      border:1px solid var(--border);
+      border-radius:var(--radius-lg);
+      box-shadow:var(--shadow-window);
+      display:none;z-index:55;overflow:hidden;
+      will-change:top,left,width,height,transform,opacity;
+      transition:none
+    }
+    .w.anim{transition:transform .3s var(--ease),opacity .3s var(--ease),top .3s var(--ease),left .3s var(--ease),width .3s var(--ease),height .3s var(--ease),border-radius .3s var(--ease),border .3s var(--ease)}
+    .w.o{display:flex;flex-direction:column;animation:wo .22s var(--ease) forwards}
+    .w.cl{animation:wc .16s var(--ease) forwards}
+    .w.mx{width:100%!important;height:calc(100% - 46px - 34px)!important;top:34px!important;left:0!important;border-radius:0!important;border:none!important;animation:none}
+    @keyframes wo{from{opacity:0;transform:scale(.92) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    @keyframes wc{from{opacity:1;transform:scale(1) translateY(0)}to{opacity:0;transform:scale(.92) translateY(14px)}}
+
+    /* Titlebar */
+    .w-tb{
+      display:flex;align-items:center;
+      padding:8px 12px;border-bottom:1px solid rgba(107,159,255,.05);
+      background:rgba(255,255,255,.012);
+      cursor:grab;flex-shrink:0;min-height:36px
+    }
+    .w-tb:active{cursor:grabbing}
+    .w-tb .d{display:flex;gap:7px;margin-right:10px;flex-shrink:0}
+    .w-tb .d .dt{
+      width:12px;height:12px;border-radius:50%;cursor:pointer;
+      transition:all .12s ease;position:relative
+    }
+    .w-tb .d .dt::before{content:'';position:absolute;inset:0;border-radius:50%;opacity:0;transition:opacity .12s ease}
+    .w-tb .d .c{background:#ff5f56}.w-tb .d .c:hover{background:#ff3b30}
+    .w-tb .d .m{background:#ffbd2e}.w-tb .d .m:hover{background:#ffa500}
+    .w-tb .d .x{background:#27c93f}.w-tb .d .x:hover{background:#00d924}
+
+    .w-tb .tt{
+      flex:1;font:11px/1 var(--font-ui);font-weight:500;color:var(--text-dim);
+      display:flex;align-items:center;gap:7px;min-width:0;
+      letter-spacing:.3px
+    }
+    .w-tb .tt .tb-gallery-link{
+      margin-left:auto;font-size:10px;color:var(--accent);cursor:pointer;
+      padding:3px 8px;border-radius:4px;opacity:.6;
+      transition:all .12s ease;white-space:nowrap;letter-spacing:.3px
+    }
+    .w-tb .tt .tb-gallery-link:hover{opacity:1;background:rgba(107,159,255,.08)}
+    .w-tb .tt .ico{font-size:13px}
+
+    /* Resize handle */
+    .w-rs{
+      position:absolute;right:0;bottom:0;
+      width:20px;height:20px;
+      cursor:nwse-resize;z-index:10
+    }
+    .w-rs::after{
+      content:'';position:absolute;right:4px;bottom:4px;
+      width:8px;height:8px;
+      border-right:2px solid rgba(107,159,255,.15);
+      border-bottom:2px solid rgba(107,159,255,.15)
+    }
+    .w-rs:hover::after{border-color:var(--accent)}
+
+    /* Body */
+    .w-bd{
+      flex:1;padding:20px 24px;
+      overflow-y:auto;overflow-x:hidden
+    }
+    .w-bd::-webkit-scrollbar{width:4px}
+    .w-bd::-webkit-scrollbar-track{background:transparent}
+    .w-bd::-webkit-scrollbar-thumb{background:rgba(107,159,255,.1);border-radius:2px}
+    .w-bd::-webkit-scrollbar-thumb:hover{background:rgba(107,159,255,.2)}
+
+    .w-bd h2{font-size:17px;font-weight:600;color:var(--text);margin-bottom:3px}
+    .w-bd .st{font-size:11px;color:var(--accent);font-weight:400;margin-bottom:16px;font-family:var(--font-ui);letter-spacing:.5px}
+    .w-bd .hr{height:1px;background:linear-gradient(90deg,rgba(107,159,255,.12),transparent 80%);margin:14px 0}
+    .w-bd p{font-size:13px;line-height:1.7;color:var(--text-dim);margin-bottom:10px}
+    .about-layout{display:flex;gap:20px;align-items:flex-start}
+    .about-text{flex:1;min-width:0}
+    .about-photo{flex-shrink:0;width:140px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid rgba(107,159,255,.08)}
+    .about-photo img{width:100%;height:auto;display:block;object-fit:cover}
+    @media(max-width:640px){.about-layout{flex-direction:column-reverse}.about-photo{width:100px}}
+    .w-bd .bg{
+      display:inline-block;padding:2px 9px;border-radius:4px;
+      font-size:10px;font-family:var(--font-ui);
+      background:rgba(107,159,255,.06);border:1px solid rgba(107,159,255,.08);
+      color:var(--accent);margin-right:3px;margin-bottom:3px
+    }
+
+    /* Work cards */
+    .wc{
+      background:rgba(255,255,255,.015);
+      border:1px solid rgba(107,159,255,.06);
+      border-radius:var(--radius-md);padding:14px 16px;
+      margin-bottom:10px;transition:all .15s ease
+    }
+    .wc:hover{border-color:rgba(107,159,255,.15);background:rgba(255,255,255,.025)}
+    .wc h3{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+    .wc .dsc{font-size:12px;color:var(--text-dim);margin-bottom:9px;line-height:1.5}
+    .wc .ac{display:flex;gap:7px}
+    .btn{
+      display:inline-flex;align-items:center;gap:5px;
+      padding:5px 13px;border-radius:var(--radius-sm);
+      font-size:11px;font-weight:500;cursor:pointer;
+      border:1px solid rgba(107,159,255,.12);
+      background:rgba(107,159,255,.05);color:var(--accent);
+      transition:all .15s ease;text-decoration:none;font-family:var(--font-ui)
+    }
+    .btn:hover{background:rgba(107,159,255,.1);border-color:rgba(107,159,255,.2)}
+    .btn-p{background:rgba(107,159,255,.1);border-color:rgba(107,159,255,.16)}
+    .btn-p:hover{background:rgba(107,159,255,.18);box-shadow:0 0 14px rgba(107,159,255,.06)}
+
+    /* Gallery */
+    .gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+    .gi{
+      aspect-ratio:16/11;border-radius:var(--radius-sm);
+      background:var(--surface);border:1px solid rgba(107,159,255,.05);
+      overflow:hidden;cursor:pointer;transition:all .15s ease;
+      position:relative
+    }
+    .gi:hover{border-color:rgba(107,159,255,.2);transform:scale(1.015)}
+    .gi img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .3s ease;pointer-events:none}
+    .gi:hover img{transform:scale(1.05)}
+    .gi .lb{
+      position:absolute;bottom:0;left:0;right:0;
+      padding:22px 7px 6px;
+      background:linear-gradient(transparent,rgba(0,0,0,.85));
+      color:rgba(224,232,255,.9);font-size:10px;font-family:var(--font-ui);text-align:center;
+      pointer-events:none
+    }
+
+    /* Links */
+    .lg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .lc{
+      display:flex;align-items:center;gap:9px;
+      padding:10px 12px;border-radius:var(--radius-sm);
+      background:rgba(255,255,255,.015);border:1px solid rgba(107,159,255,.05);
+      cursor:pointer;transition:all .15s ease;text-decoration:none;color:inherit
+    }
+    .lc:hover{background:rgba(107,159,255,.04);border-color:rgba(107,159,255,.12);transform:translateY(-1px)}
+    .lc .li{width:34px;height:34px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+    .lc .li2 h4{font-size:12px;font-weight:500;color:var(--text);margin-bottom:1px}
+    .lc .li2 span{font-size:10px;color:var(--text-muted);font-family:var(--font-ui)}
+
+    /* Contact */
+    .cf{display:flex;flex-direction:column;gap:11px;max-width:380px}
+    .cf .fl label{display:block;font-size:9px;font-family:var(--font-ui);color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+    .cf .fl input,.cf .fl textarea{
+      width:100%;padding:8px 11px;border-radius:var(--radius-sm);
+      border:1px solid rgba(107,159,255,.08);background:rgba(255,255,255,.015);
+      color:var(--text);font:13px/1.4 var(--font-body);outline:none;transition:all .15s ease
+    }
+    .cf .fl input:focus,.cf .fl textarea:focus{border-color:rgba(107,159,255,.2);background:rgba(255,255,255,.03);box-shadow:0 0 12px rgba(107,159,255,.03)}
+    .cf .fl textarea{height:80px;resize:vertical}
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width:640px){
+      .monitor{max-width:95vw}
+      .bezel{padding:10px;border-radius:12px}
+      .term{padding:14px;font-size:11px}
+      .w{min-width:260px!important}
+      .w-bd{padding:14px}
+      .lg{grid-template-columns:1fr}
+      .gg{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+    }
+  </style>
+</head>
+<body>
+
+<!-- CRT Scanline Overlay -->
+<div class="crt" id="crt"></div>
+
+<!-- Glitch Flash -->
+<!-- ===== BOOT SCREEN ===== -->
+<div id="boot">
+  <div class="monitor" id="monitor">
+    <div class="bezel">
+      <div class="screen" id="screen">
+        <!-- Off state -->
+        <div class="off-state" id="offState">
+          <div class="logo"><img src="assets/logo-w-transparent.png" alt="W" /></div>
+          <div class="wname">Walker.OS</div>
+          <div class="wver">v3.0.1 — 64-bit</div>
+          <div class="hint">▾  click to boot  ▾</div>
+        </div>
+
+        <!-- Terminal boot -->
+        <div class="term" id="term">
+          <div id="bootLines"></div>
+          <div class="cl" id="cl">
+            <span style="color:var(--accent)">root@walker:~$</span>
+            <span class="cb"></span>
+          </div>
+        </div>
+      </div>
+      <div class="power-led" id="led">
+        <span class="pl">power</span>
+      </div>
+    </div>
+    <div class="stand"></div>
+    <div class="base"></div>
+  </div>
+</div>
+
+<!-- ===== DESKTOP ===== -->
+<div id="desktop">
+  <div class="wp"></div>
+  <div class="grid"></div>
+
+  <!-- ===== WINDOWS ===== -->
+
+  <!-- ABOUT -->
+  <div class="w" id="w-about" style="width:500px;top:50px;left:calc(50% - 250px);max-height:76vh">
+    <div class="w-tb" onmousedown="dragStart(event,'w-about')">
+      <div class="d">
+        <div class="dt c" onclick="closeWin('about')"></div>
+        <div class="dt m" onclick="minWin('about')"></div>
+        <div class="dt x" onclick="maxWin('about')"></div>
+      </div>
+      <div class="tt"><span class="ico"></span> About</div>
+    </div>
+    <div class="w-bd">
+      <div class="about-layout">
+        <div class="about-text">
+          <h2>Walker Birchfield</h2>
+          <div class="st">History Graduate & Creative Director</div>
+          <p>Hello and thank you for visiting my webpage. My name is Walker Birchfield and I'm excited to share my portfolio with you.</p>
+          <p>I graduated from Purdue University in May 2026 with a bachelor's degree in History, a minor in IT, and a certificate in Cornerstone. Throughout my time there, I developed a deep passion for research, development, digital media, creative content, and sports. It's a combination that continues to drive my work today.</p>
+          <div class="hr"></div>
+          <p>I currently work for Purdue Athletics in the Ross-Ade Brigade, the official student section for Purdue Football, where I serve as Creative Director. Previously, I worked for the Lafayette Aviators, a summer collegiate baseball team competing in the Prospect League, also serving as Creative Director.</p>
+          <p>I am currently in the application process for law school, with top options including Michigan State University, Indiana University–Indianapolis, and Indiana University–Bloomington. I hope to use my law school education and sports background to continue working in athletics, focusing on sports law or player agency.</p>
+          <div class="hr"></div>
+        </div>
+        <div class="about-photo">
+          <img src="assets/headshot.jpg" alt="Walker Birchfield" />
+        </div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px">
+        <span class="bg">Purdue University</span>
+        <span class="bg">History</span>
+        <span class="bg">IT Minor</span>
+        <span class="bg">Creative Direction</span>
+        <span class="bg">Photography</span>
+        <span class="bg">Sports Media</span>
+        <span class="bg">Video Production</span>
+        <span class="bg">Class of '26</span>
+      </div>
+    </div>
+    <div class="w-rs" onmousedown="resizeStart(event,'w-about')"></div>
+  </div>
+
+  <!-- WORK -->
+  <div class="w" id="w-work" style="width:440px;top:75px;right:70px;max-height:68vh">
+    <div class="w-tb" onmousedown="dragStart(event,'w-work')">
+      <div class="d">
+        <div class="dt c" onclick="closeWin('work')"></div>
+        <div class="dt m" onclick="minWin('work')"></div>
+        <div class="dt x" onclick="maxWin('work')"></div>
+      </div>
+      <div class="tt"><span class="ico"></span> Work</div>
+    </div>
+    <div class="w-bd">
+      <h2>Professional Works</h2>
+      <div class="st">A selection of professional documents and writing</div>
+
+      <div class="wc">
+        <h3>Resume</h3>
+        <p class="dsc">Walker Birchfield — Student, Creative Director & Digital Media Specialist.</p>
+        <div class="ac">
+          <a class="btn btn-p" href="assets/WalkerBirchfield-Resume.pdf" download>📥 Download</a>
+          <a class="btn" href="javascript:void(0)" onclick="openPreview('assets/WalkerBirchfield-Resume.pdf','Resume')">👁️ Preview</a>
+        </div>
+      </div>
+
+      <div class="wc">
+        <h3>Writing Sample</h3>
+        <p class="dsc">Academic Paper — Research on the effects of American Intervention during the Vietnam War.</p>
+        <div class="ac">
+          <a class="btn btn-p" href="assets/WalkerBirchfield-WritingSample.pdf" download>📥 Download</a>
+          <a class="btn" href="javascript:void(0)" onclick="openPreview('assets/WalkerBirchfield-WritingSample.pdf','Writing Sample')">👁️ Preview</a>
+        </div>
+      </div>
+
+    </div>
+    <div class="w-rs" onmousedown="resizeStart(event,'w-work')"></div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="w" id="w-gallery" style="width:600px;top:85px;left:90px;max-height:73vh">
+    <div class="w-tb" onmousedown="dragStart(event,'w-gallery')">
+      <div class="d">
+        <div class="dt c" onclick="closeWin('gallery')"></div>
+        <div class="dt m" onclick="minWin('gallery')"></div>
+        <div class="dt x" onclick="maxWin('gallery')"></div>
+      </div>
+      <div class="tt"><span class="ico"></span> Gallery <span class="tb-gallery-link" onclick="event.stopPropagation();goToGallery()">Full Gallery →</span></div>
+    </div>
+    <div class="w-bd">
+      <h2>Creative Works</h2>
+      <div class="st">Photography, design & creative direction</div>
+      <p style="font-size:12px;margin-bottom:14px">During my collegiate years in West Lafayette, I have had the opportunity to work in creative director positions for the <strong style="color:var(--text)">Ross-Ade Brigade</strong> (Purdue Athletics) and the <strong style="color:var(--text)">Lafayette Aviators</strong> (collegiate summer baseball). Below are some examples of the work I have produced.</p>
+
+      <div class="gg" id="galleryGrid"></div>
+
+    </div>
+    <div class="w-rs" onmousedown="resizeStart(event,'w-gallery')"></div>
+  </div>
+
+  <!-- LINKS -->
+  <div class="w" id="w-links" style="width:400px;top:120px;right:90px">
+    <div class="w-tb" onmousedown="dragStart(event,'w-links')">
+      <div class="d">
+        <div class="dt c" onclick="closeWin('links')"></div>
+        <div class="dt m" onclick="minWin('links')"></div>
+        <div class="dt x" onclick="maxWin('links')"></div>
+      </div>
+      <div class="tt"><span class="ico"></span> Links</div>
+    </div>
+    <div class="w-bd">
+      <h2>Connect</h2>
+      <div class="st">Find me around the web</div>
+      <div class="lg" style="margin-top:8px">
+        <a class="lc" href="https://www.instagram.com/walkerbirchfield/" target="_blank">
+          <div class="li" style="background:linear-gradient(135deg,#f58529,#dd2a7b)">📸</div>
+          <div class="li2"><h4>Instagram (Personal)</h4><span>@walkerbirchfield</span></div>
+        </a>
+        <a class="lc" href="https://www.instagram.com/shotsbywalker/" target="_blank">
+          <div class="li" style="background:linear-gradient(135deg,#f58529,#515bd4)">📷</div>
+          <div class="li2"><h4>Instagram (Creative)</h4><span>@shotsbywalker</span></div>
+        </a>
+        <a class="lc" href="https://linkedin.com/in/walkerbirchfield" target="_blank">
+          <div class="li" style="background:#0077b5">💼</div>
+          <div class="li2"><h4>LinkedIn</h4><span>Walker Birchfield</span></div>
+        </a>
+        <a class="lc" href="mailto:walker.birchfield03@gmail.com">
+          <div class="li" style="background:#ea4335">📧</div>
+          <div class="li2"><h4>Email</h4><span>walker.birchfield03@gmail.com</span></div>
+        </a>
+      </div>
+    </div>
+    <div class="w-rs" onmousedown="resizeStart(event,'w-links')"></div>
+  </div>
+
+  <!-- PREVIEW (PDF Viewer) -->
+  <div class="w" id="w-preview" style="width:860px;height:80vh;top:10vh;left:calc(50% - 430px);max-height:85vh">
+    <div class="w-tb" onmousedown="dragStart(event,'w-preview')">
+      <div class="d">
+        <div class="dt c" onclick="closeWin('preview')"></div>
+        <div class="dt m" onclick="minWin('preview')"></div>
+        <div class="dt x" onclick="maxWin('preview')"></div>
+      </div>
+      <div class="tt"><span class="ico"></span> <span id="previewTitle">Preview</span></div>
+    </div>
+    <div class="w-bd" style="padding:0;overflow:hidden;background:#fff">
+      <embed id="previewFrame" src="" type="application/pdf" style="width:100%;height:100%;border:none" />
+    </div>
+    <div class="w-rs" onmousedown="resizeStart(event,'w-preview')"></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="w" id="w-contact" style="width:380px;top:140px;left:130px">
+    <div class="w-tb" onmousedown="dragStart(event,'w-contact')">
+      <div class="d">
+        <div class="dt c" onclick="closeWin('contact')"></div>
+        <div class="dt m" onclick="minWin('contact')"></div>
+        <div class="dt x" onclick="maxWin('contact')"></div>
+      </div>
+      <div class="tt"><span class="ico"></span> Contact</div>
+    </div>
+    <div class="w-bd">
+      <h2>Get in Touch</h2>
+      <div class="cf">
+        <div class="fl"><label>Name</label><input type="text" placeholder="Your name" /></div>
+        <div class="fl"><label>Email</label><input type="email" placeholder="your@email.com" /></div>
+        <div class="fl"><label>Message</label><textarea placeholder="Like what you see? Let's connect."></textarea></div>
+        <button class="btn btn-p" style="align-self:flex-start;padding:7px 18px;cursor:pointer" onclick="alert('📨 Message sent!\n\n(Demo — email walker.birchfield03@gmail.com)')">Send →</button>
+      </div>
+      <div style="margin-top:14px;padding:10px 12px;border-radius:var(--radius-sm);background:rgba(107,159,255,.03);border:1px solid rgba(107,159,255,.05);font-size:10px;color:var(--text-muted);font-family:var(--font-ui)">
+        Or email: <a href="mailto:walker.birchfield03@gmail.com" style="color:var(--accent);text-decoration:none">walker.birchfield03@gmail.com</a>
+      </div>
+    </div>
+    <div class="w-rs" onmousedown="resizeStart(event,'w-contact')"></div>
+  </div>
+
+  <!-- ===== FULLSCREEN TAB BAR ===== -->
+  <div class="mx-tabs" id="mxTabs"></div>
+
+  <!-- ===== TASKBAR ===== -->
+  <div class="tb">
+    <div class="tb-start" id="tbStart" onclick="toggleStart()">W</div>
+    <div class="tb-div"></div>
+    <div class="tb-apps" id="tbApps">
+      <div class="tb-app" data-app="about" onclick="toggleWin('about')"><img src="assets/AboutIcon.png" alt="About" /></div>
+      <div class="tb-app" data-app="work" onclick="toggleWin('work')"><img src="assets/WorkIcon.png" alt="Work" /></div>
+      <div class="tb-app" data-app="gallery" onclick="toggleWin('gallery')"><img src="assets/GalleryIcon.png" alt="Gallery" /></div>
+      <div class="tb-app" data-app="contact" onclick="toggleWin('contact')"><img src="assets/ContactIcon.png" alt="Contact" /></div>
+      <div class="tb-app" data-app="links" onclick="toggleWin('links')"><img src="assets/LinksIcon.png" alt="Links" /></div>
+    </div>
+    <div class="tb-ttip" id="tbTtip"></div>
+    <div class="tb-tray">
+      <span class="ti" title="Network">📶</span>
+      <span class="ti" title="Battery">🔋</span>
+      <span class="ti" title="Shut Down" onclick="powerOff()">⏻</span>
+      <span class="tb-clock" id="clock"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== STATE =====
+  const S = {
+    bi: 0, booted: false, ow: {}, zi: 55,
+    drag: null, resize: null, mx: {}, mxPos: {}
+  }
+
+  // ===== CLOCK =====
+  function tick(){
+    const n=new Date()
+    let h=n.getHours(), ampm=h>=12?'PM':'AM'
+    h=h%12||12
+    document.getElementById('clock').textContent=
+      n.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'  '+
+      h+':'+String(n.getMinutes()).padStart(2,'0')+' '+ampm
+  }
+  tick(); setInterval(tick,1e4)
+
+  // ===== CRT SCANLINES =====
+  setTimeout(()=>document.getElementById('crt').classList.add('scan'),500)
+
+  // ===== BOOT =====
+  const LINES=[
+    {t:'',c:''},
+    {t:'  Walker.OS v3.0.1 — 64-bit Kernel (x86_64)',c:'ac'},
+    {t:'  BIOS: C.Virginia (Build 12-04-2003)',c:'dim'},
+    {t:'  CPU: Intel Core i7-13700H @ 2.40GHz',c:'dim'},
+    {t:'  RAM: 16384MB (DDR5-4800)',c:'dim'},
+    {t:'',c:''},
+    {t:'  [BOOT] Loading system modules...',c:'ac'},
+    {t:'',c:''},
+    {t:'  [  OK  ]  kernel.core           ',c:'ok'},
+    {t:'  [  OK  ]  memory.manager        ',c:'ok'},
+    {t:'  [  OK  ]  process.scheduler     ',c:'ok'},
+    {t:'  [  OK  ]  filesystem.ext4       ',c:'ok'},
+    {t:'  [  OK  ]  network.stack         ',c:'ok'},
+    {t:'  [  OK  ]  display.manager       ',c:'ok'},
+    {t:'',c:''},
+    {t:'  [SYS] Loading user context...',c:'ac'},
+    {t:'',c:''},
+    {t:'  [  OK  ]  professional.services',c:'ok'},
+    {t:'  [  OK  ]  creative.core         ',c:'ok'},
+    {t:'  [  OK  ]  photography.drv       ',c:'ok'},
+    {t:'  [  OK  ]  sports.module         ',c:'ok'},
+    {t:'  [  OK  ]  education.cert        ',c:'ok'},
+    {t:'  [  OK  ]  contact.interface     ',c:'ok'},
+    {t:'',c:''},
+    {t:'  [USER] Walker Birchfield — Purdue \'26',c:'hl'},
+    {t:'',c:''},
+    {t:'  [BOOT] System ready in 0.47s',c:'ok'},
+    {t:'  [LAUNCH] Starting user interface...',c:'ac'}
+  ]
+
+  function boot(){
+    if(S.bi>0)return
+    const s=document.getElementById('screen'),os=document.getElementById('offState'),t=document.getElementById('term'),l=document.getElementById('led'),cl=document.getElementById('cl')
+    cl.style.display='none'
+    s.classList.add('warm');l.classList.add('on')
+    os.classList.add('hide')
+    setTimeout(()=>{os.style.display='none';t.classList.add('show');typeBoot()},700)
+  }
+
+  function typeBoot(){
+    const c=document.getElementById('bootLines'),cl=document.getElementById('cl')
+    if(S.bi<LINES.length){
+      const ln=LINES[S.bi],d=document.createElement('div')
+      d.className='l'
+      if(ln.c){const sp=document.createElement('span');sp.className=ln.c;sp.textContent=ln.t;d.appendChild(sp)}
+      else if(ln.t)d.textContent=ln.t
+      c.appendChild(d)
+      requestAnimationFrame(()=>requestAnimationFrame(()=>d.classList.add('in')))
+      S.bi++
+      const dl=ln.t.length>50?25:ln.t===''?40:15+Math.random()*18
+      setTimeout(typeBoot,dl)
+    }else{
+      cl.style.display='flex'
+      setTimeout(()=>{
+        document.getElementById('boot').classList.add('hidden')
+        setTimeout(()=>{
+          document.getElementById('desktop').classList.add('in')
+          S.booted=true
+          document.addEventListener('keydown',kbd)
+          // Restore windows from gallery return, or auto-open About
+          setTimeout(()=>{toggleWin('about')},500)
+        },300)
+      },600)
+    }
+  }
+
+  // Click monitor / any key
+  document.getElementById('monitor').addEventListener('click',boot)
+  document.addEventListener('keydown',e=>{if(S.bi===0&&!document.getElementById('boot').classList.contains('hidden'))boot()})
+
+  // ===== TASKBAR TOOLTIP =====
+  const TIP_NAMES={about:'About',work:'Professional Work',gallery:'Creative Work',contact:'Contact',links:'Links'}
+  document.querySelectorAll('.tb-app').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      const r=el.getBoundingClientRect(),tip=document.getElementById('tbTtip')
+      tip.textContent=TIP_NAMES[el.dataset.app]||el.dataset.app
+      tip.style.left=(r.left+r.width/2)+'px'
+      tip.classList.add('show')
+    })
+    el.addEventListener('mouseleave',()=>document.getElementById('tbTtip').classList.remove('show'))
+  })
+
+  // ===== GALLERY =====
+  const GALLERY=[
+    {f:'photos/baseball/brody-bat-flip.jpg',l:'Brody Chrisman — Bat Flip'},
+    {f:'photos/baseball/brody-chrisman-walkoff.jpg',l:'Brody Chrisman — Walk-Off Celebration'},
+    {f:'photos/baseball/fourth-of-july-pitching.jpg',l:'4th of July — Warm ups on the mound'},
+    {f:'photos/baseball/gavin-smith-hitting.jpg',l:'Gavin Smith — At the Plate'},
+    {f:'photos/baseball/keifer-wilson-dugout.jpg',l:'Keifer Wilson — Post inning'},
+    {f:'photos/design/200-wins-graphic.jpg',l:'200 Wins — Milestone Graphic'},
+    {f:'photos/design/brody-card-graphic.jpg',l:'Brody Card — Baseball Card Graphic'},
+    {f:'photos/design/illinois-gameday-graphic.jpg',l:'Illinois Vs Purdue — Gameday Graphic'},
+    {f:'photos/design/notre-dame-graphic.jpg',l:'Purdue @ Notre Dame — Gameday Graphic'},
+    {f:'photos/design/students-wanted-graphic.jpg',l:'Students Wanted — Recruitment Campaign'},
+    {f:'photos/design/thank-you-fans-graphic.jpg',l:'Thank You Fans — Fan Appreciation Graphic'},
+    {f:'photos/football/ryan-brown-running.jpg',l:'Ryan Browne — Running Back Play Action'},
+    {f:'photos/football/ryan-browne-touchdown-celebration.jpg',l:'Ryan Browne — Touchdown Celebration'},
+    {f:'photos/bts/dave-watching-crowd.jpg',l:'Coach Shondell — Watching the Crowd'},
+    {f:'photos/bts/volleyball-intro.jpg',l:'Purdue Volleyball — Mackey Gameday'},
+  ];
+  ;(()=>{
+    const g=document.getElementById('galleryGrid')
+    g.innerHTML=GALLERY.map(x=>
+      `<div class="gi" onclick="alert('📸 ${x.l}')">
+        <img src="${x.f}" alt="${x.l}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" loading="lazy" />
+        <span class="lb">${x.l}</span>
+      </div>`
+    ).join('')
+  })()
+
+  // ===== ICON POSITION HELPER =====
+  function iconRect(name){
+    const el=document.querySelector(`.tb-app[data-app="${name}"]`)
+    if(!el)return null
+    const r=el.getBoundingClientRect()
+    return {top:r.top+6,left:r.left+4,width:30,height:28}
+  }
+
+  // ===== PREVIEW (PDF Viewer) =====
+  function openPreview(src, title){
+    document.getElementById('previewFrame').src = src + '#toolbar=0&navpanes=0&scrollbar=0'
+    document.getElementById('previewTitle').textContent = title
+    const el = document.getElementById('w-preview')
+    if(el.classList.contains('o')){focusWin('preview');return}
+    el.classList.remove('cl')
+    el.style.display='flex'
+    el.style.zIndex=++S.zi
+    el.style.opacity='1'
+    el.style.transform='scale(1)'
+    el.classList.add('anim')
+    setTimeout(()=>{el.classList.remove('anim');el.classList.add('o');el.style.animation='none';void el.offsetHeight},350)
+    S.ow.preview=true
+  }
+
+  // ===== WINDOW MANAGEMENT =====
+  const WINS={about:'About',work:'Work',gallery:'Gallery',links:'Links',contact:'Contact',preview:'Preview'}
+  const WINPOS={about:'width:500px;top:50px;left:calc(50% - 250px);max-height:76vh',
+    work:'width:440px;top:75px;right:70px;max-height:68vh',
+    gallery:'width:600px;top:85px;left:90px;max-height:73vh',
+    links:'width:400px;top:120px;right:90px',
+    contact:'width:380px;top:140px;left:130px',
+    preview:'width:860px;height:80vh;top:10vh;left:calc(50% - 430px);max-height:85vh'}
+
+  function toggleWin(name){
+    const el=document.getElementById('w-'+name)
+    if(!el)return
+    if(el.classList.contains('o')){focusWin(name);return}
+    const ico=iconRect(name)
+    if(!ico)return
+    const vw=window.innerWidth, vh=window.innerHeight
+    const targets={
+      about:{w:500,h:Math.min(vh*0.76,600),t:50,l:vw/2-250},
+      work:{w:440,h:Math.min(vh*0.68,550),t:75,l:vw-440-70},
+      gallery:{w:600,h:Math.min(vh*0.73,580),t:85,l:90},
+      links:{w:400,h:380,t:120,l:vw-400-90},
+      contact:{w:380,h:360,t:140,l:130}
+    }
+    const t=targets[name]||{w:500,h:400,t:80,l:80}
+    el.classList.remove('cl')
+    // Position at full size at target location
+    el.style.cssText='display:flex;flex-direction:column;z-index:'+(++S.zi)+';width:'+t.w+'px;height:'+t.h+'px;top:'+t.t+'px;left:'+t.l+'px;right:auto;opacity:0;transform:scale(0);border-radius:0'
+    // Set transform-origin to icon position relative to window
+    const ox=ico.left-t.l+ico.width/2, oy=ico.top-t.t+ico.height/2
+    el.style.transformOrigin=ox+'px '+oy+'px'
+    void el.offsetHeight
+    // Animate in
+    el.classList.add('anim')
+    el.style.opacity='1'
+    el.style.transform='scale(1)'
+    setTimeout(()=>{
+      el.classList.remove('anim')
+      el.classList.add('o')
+      el.style.animation='none'
+      void el.offsetHeight
+    },350)
+    S.ow[name]=true
+    updateTB(name)
+  }
+
+  function focusWin(name){
+    const el=document.getElementById('w-'+name)
+    if(!el)return
+    S.zi++;el.style.zIndex=S.zi
+    void el.offsetHeight
+    updateTB(name)
+  }
+
+  function closeWin(name){
+    const el=document.getElementById('w-'+name)
+    if(!el)return
+    if(S.mx[name]){S.mx[name]=false;updateMxTabs()}
+    const ico=iconRect(name)
+    if(ico&&el.classList.contains('o')){
+      const r=el.getBoundingClientRect()
+      const ox=ico.left-r.left+ico.width/2, oy=ico.top-r.top+ico.height/2
+      el.classList.remove('o','mx','anim')
+      void el.offsetHeight
+      el.style.transformOrigin=ox+'px '+oy+'px'
+      el.classList.add('anim')
+      el.style.transform='scale(0)'
+      el.style.opacity='0'
+      setTimeout(()=>{
+        el.style.display='none'
+        el.classList.remove('anim','cl')
+        el.style.transform=''
+        el.style.transformOrigin=''
+      },300)
+    }else{
+      el.classList.add('cl')
+      setTimeout(()=>{el.style.display='none';el.classList.remove('cl')},160)
+    }
+    delete S.ow[name]
+    updateTB()
+    updateMxTabs()
+  }
+
+  function minWin(name){
+    const el=document.getElementById('w-'+name)
+    if(!el)return
+    if(S.mx[name]){S.mx[name]=false;updateMxTabs()}
+    const ico=iconRect(name)
+    if(ico&&el.classList.contains('o')){
+      const r=el.getBoundingClientRect()
+      const ox=ico.left-r.left+ico.width/2, oy=ico.top-r.top+ico.height/2
+      el.classList.remove('o','mx','anim')
+      void el.offsetHeight
+      el.style.transformOrigin=ox+'px '+oy+'px'
+      el.classList.add('anim')
+      el.style.transform='scale(0)'
+      el.style.opacity='0'
+      setTimeout(()=>{
+        el.style.display='none'
+        el.classList.remove('anim','cl')
+        el.style.transform=''
+        el.style.transformOrigin=''
+      },300)
+    }else{
+      el.classList.add('cl')
+      setTimeout(()=>{el.style.display='none';el.classList.remove('cl')},160)
+    }
+    updateTB()
+    updateMxTabs()
+  }
+
+  function maxWin(name){
+    const el=document.getElementById('w-'+name)
+    if(!el)return
+    if(S.mx[name]){
+      const orig=S.mxPos[name]
+      if(orig){
+        el.classList.remove('mx');el.classList.add('anim')
+        el.style.top=orig.top+'px';el.style.left=orig.left+'px'
+        el.style.width=orig.width;el.style.height=orig.height
+        el.style.borderRadius='';el.style.border=''
+        setTimeout(()=>{
+          el.classList.remove('anim')
+          el.style.cssText=orig.inline+';display:flex;z-index:'+S.zi
+        },320)
+      }else{
+        el.classList.remove('mx','anim')
+        if(WINPOS[name])el.style.cssText=WINPOS[name]+';display:flex;z-index:'+S.zi
+      }
+      S.mx[name]=false
+    }else{
+      const r=el.getBoundingClientRect()
+      S.mxPos[name]={top:r.top,left:r.left,width:r.width+'px',height:r.height+'px',inline:el.style.cssText}
+      S.zi++;el.style.zIndex=S.zi
+      el.classList.add('anim')
+      el.style.top='34px';el.style.left='0'
+      el.style.width='100%';el.style.height='calc(100% - 46px - 34px)'
+      el.style.borderRadius='0';el.style.border='none'
+      setTimeout(()=>{el.classList.remove('anim');el.classList.add('mx')},320)
+      S.mx[name]=true
+    }
+    updateTB()
+    updateMxTabs()
+  }
+
+  function updateMxTabs(){
+    const c=document.getElementById('mxTabs')
+    const mxed=Object.keys(S.mx).filter(n=>S.mx[n])
+    const icons={about:'<img src="assets/AboutIcon.png">',work:'<img src="assets/WorkIcon.png">',gallery:'<img src="assets/GalleryIcon.png">',links:'<img src="assets/LinksIcon.png">',contact:'<img src="assets/ContactIcon.png">',preview:'📄'}
+    if(mxed.length===0){c.classList.remove('show');c.innerHTML='';return}
+    c.classList.add('show')
+    c.innerHTML=mxed.map(n=>
+      `<div class="mt on" data-mx="${n}">
+        <span class="mti">${icons[n]||''}</span> ${n.charAt(0).toUpperCase()+n.slice(1)}
+        <span class="mtc" data-mx-close="${n}">✕</span>
+      </div>`
+    ).join('')
+  }
+  // Tab bar event delegation
+  document.addEventListener('click',e=>{
+    const tab=e.target.closest('[data-mx]')
+    if(tab){const n=tab.dataset.mx;if(n in S.mx)blurFocus(n)}
+    const close=e.target.closest('[data-mx-close]')
+    if(close){closeWin(close.dataset.mxClose)}
+  })
+  function blurFocus(name){
+    const el=document.getElementById('w-'+name)
+    if(el){S.zi++;el.style.zIndex=S.zi}
+    updateMxTabs()
+  }
+
+  function updateTB(active){
+    document.querySelectorAll('.tb-app').forEach(a=>{
+      const n=a.dataset.app
+      a.classList.toggle('on',n in S.ow)
+      if(active&&n===active)a.classList.add('on')
+    })
+  }
+
+  // ===== START MENU =====
+  let startOpen=false
+  function toggleStart(){
+    if(!startOpen){
+      startOpen=true
+      // Open all that aren't open yet
+      Object.keys(WINS).forEach((n,i)=>setTimeout(()=>{
+        if(!(n in S.ow))toggleWin(n)
+      },i*60))
+      setTimeout(()=>startOpen=false,500)
+    }
+  }
+
+  // ===== DRAG =====
+  function dragStart(e,id){
+    if(e.button!==0)return
+    const el=document.getElementById(id)
+    if(!el||el.classList.contains('mx'))return
+    S.zi++;el.style.zIndex=S.zi
+    const r=el.getBoundingClientRect()
+    S.drag={el,ox:e.clientX-r.left,oy:e.clientY-r.top}
+    const n=id.replace('w-','')
+    updateTB(n)
+    document.addEventListener('mousemove',dragMove)
+    document.addEventListener('mouseup',dragStop)
+    e.preventDefault()
+  }
+  function dragMove(e){
+    if(!S.drag)return
+    const{el,ox,oy}=S.drag
+    el.style.left=Math.max(0,e.clientX-ox)+'px'
+    el.style.top=Math.max(0,e.clientY-oy)+'px'
+    el.style.right='auto'
+  }
+  function dragStop(){S.drag=null;document.removeEventListener('mousemove',dragMove);document.removeEventListener('mouseup',dragStop)}
+
+  // ===== RESIZE (corner only) =====
+  function resizeStart(e,id){
+    e.stopPropagation()
+    if(e.button!==0)return
+    const el=document.getElementById(id)
+    if(!el||el.classList.contains('mx'))return
+    const r=el.getBoundingClientRect()
+    S.resize={el,sx:e.clientX,sy:e.clientY,w:r.width,h:r.height,minW:320,minH:180}
+    document.addEventListener('mousemove',resizeMove)
+    document.addEventListener('mouseup',resizeStop)
+    e.preventDefault()
+  }
+  function resizeMove(e){
+    if(!S.resize)return
+    const{el,sx,sy,w,h,minW,minH}=S.resize
+    const dw=e.clientX-sx, dh=e.clientY-sy
+    const nw=Math.max(minW,w+dw), nh=Math.max(minH,h+dh)
+    el.style.width=nw+'px';el.style.height=nh+'px'
+    el.style.right='auto'
+    // Prevent overflow past viewport
+    const vw=window.innerWidth-30, vh=window.innerHeight-60
+    if(parseInt(el.style.width)>vw)el.style.width=vw+'px'
+    if(parseInt(el.style.height)>vh)el.style.height=vh+'px'
+  }
+  function resizeStop(){S.resize=null;document.removeEventListener('mousemove',resizeMove);document.removeEventListener('mouseup',resizeStop)}
+
+  // ===== KEYBOARD =====
+  function kbd(e){
+    if(e.key==='Escape'){
+      let maxZ=0,top=null
+      Object.keys(S.ow).forEach(n=>{
+        const el=document.getElementById('w-'+n)
+        if(el&&(parseInt(el.style.zIndex)||0)>maxZ){maxZ=parseInt(el.style.zIndex);top=n}
+      })
+      if(top)closeWin(top)
+    }
+    if(e.key==='Tab'&&e.altKey){
+      e.preventDefault()
+      const n=Object.keys(S.ow)
+      if(n.length>1){
+        let maxZ=0,top=null
+        n.forEach(n=>{const el=document.getElementById('w-'+n);if(el&&(parseInt(el.style.zIndex)||0)>maxZ){maxZ=parseInt(el.style.zIndex);top=n}})
+        const idx=n.indexOf(top),next=n[(idx+1)%n.length]
+        focusWin(next)
+      }
+    }
+  }
+
+  // Console art
+  console.log('%c┌───────────────────────┐','color:#6B9FFF')
+  console.log('%c│     Walker.OS v3       │','color:#6B9FFF;font-weight:700')
+  console.log('%c│  Walker Birchfield     │','color:#b0b0ff')
+  console.log('%c└───────────────────────┘','color:#6B9FFF')
+
+  // ===== POWER OFF =====
+  function powerOff(){
+    sessionStorage.removeItem('wos_wins')
+    sessionStorage.removeItem('wos_mx')
+    S.ow={};S.mx={};S.mxPos={}
+    document.getElementById('mxTabs').classList.remove('show')
+    document.getElementById('mxTabs').innerHTML=''
+    // Fade out desktop
+    document.getElementById('desktop').classList.remove('in')
+    // Fade in boot screen with message
+    const boot=document.getElementById('boot')
+    boot.style.transition='opacity .6s ease'
+    boot.style.transform='none'
+    boot.classList.remove('hidden')
+    boot.style.opacity='0'
+    void boot.offsetHeight
+    boot.style.opacity='1'
+    // Reload page after animations complete
+    setTimeout(()=>{window.location.reload()},1200)
+  }
+
+  // ===== GALLERY NAV =====
+  function goToGallery(){
+    sessionStorage.setItem('wos_wins',JSON.stringify(Object.keys(S.ow)))
+    sessionStorage.setItem('wos_mx',JSON.stringify(Object.keys(S.mx).filter(n=>S.mx[n])))
+    window.location.href='gallery.html'
+  }
+
+  // ===== SESSION RESTORE (return from gallery — skip boot) =====
+  ;(function(){
+    const saved=sessionStorage.getItem('wos_wins')
+    if(!saved)return
+    sessionStorage.removeItem('wos_wins')
+    const wins=JSON.parse(saved)
+    const mxed=JSON.parse(sessionStorage.getItem('wos_mx')||'[]')
+    sessionStorage.removeItem('wos_mx')
+    // Skip boot, show desktop immediately
+    document.getElementById('boot').classList.add('hidden')
+    document.getElementById('desktop').classList.add('in')
+    S.booted=true
+    S.bi=LINES.length
+    document.addEventListener('keydown',kbd)
+    // Restore windows
+    wins.forEach((n,i)=>setTimeout(()=>{
+      toggleWin(n)
+      if(mxed.includes(n)){
+        setTimeout(()=>{
+          const el=document.getElementById('w-'+n)
+          if(el&&!S.mx[n]){
+            const r=el.getBoundingClientRect()
+            S.mxPos[n]={top:r.top,left:r.left,width:r.width+'px',height:r.height+'px',inline:el.style.cssText}
+            el.classList.add('anim')
+            el.style.top='34px';el.style.left='0';el.style.width='100%';el.style.height='calc(100% - 46px - 34px)'
+            el.style.borderRadius='0';el.style.border='none'
+            setTimeout(()=>{el.classList.remove('anim');el.classList.add('mx')},320)
+            S.mx[n]=true
+          }
+        },350)
+      }
+    },i*120))
+    setTimeout(()=>updateMxTabs(),wins.length*150+500)
+  })()
+</script>
+</body>
 </html>
